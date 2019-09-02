@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include
+		resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+	<!-- 변수 지정 -->
+	<property name="LOG_DIR" value="./logs" />
+	<property name="LOG_JSON_PATH_NAME" value="${LOG_DIR}/data.json" />
+	<property name="LOG_PATH_NAME" value="${LOG_DIR}/data.log" />
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH_NAME}</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH_NAME}.%d{yyyyMMdd}</fileNamePattern>
+			<maxHistory>60</maxHistory> <!-- 일자별 백업파일의 보관기간 -->
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd' 'HH:mm:ss.SSS} ${HOSTNAME} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE_JSON"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_JSON_PATH_NAME}</file>
+		<append>true</append>
+		<!-- 일자별로 로그파일 적용하기 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_JSON_PATH_NAME}.%d{yyyyMMdd}</fileNamePattern>
+			<maxHistory>60</maxHistory> <!-- 일자별 백업파일의 보관기간 -->
+		</rollingPolicy>
+		<layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+				<jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+					<!-- <prettyPrint>true</prettyPrint> -->
+				</jsonFormatter>				
+				<appendLineSeparator>true</appendLineSeparator>
+				<timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+			</layout>
+	</appender>
+
+	<!-- TRACE > DEBUG > INFO > WARN > ERROR, 대소문자 구분 안함 <root level="DEBUG"> 
+		<appender-ref ref="STDOUT" /> <appender-ref ref="FILE" /> </root> <logger 
+		name="org.springframework" level="INFO" additivity="false"> </logger> <logger 
+		name="sample" level="INFO" additivity="false"> </logger> -->
+
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="FILE_JSON" />
+	</root>
+</configuration>
