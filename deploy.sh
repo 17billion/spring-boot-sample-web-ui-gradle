@@ -5,7 +5,7 @@ aContainerCnt=$(docker ps | grep webui_a | wc -l)
 bContainerCnt=$(docker ps | grep webui_b | wc -l)
 
 docker-compose stop webui_a
-docker-compose up -d --force-recreate webui_a
+docker-compose up -d webui_a
 docker-compose scale webui_a=$aContainerCnt
 
 while [ "$status" != "200" ];
@@ -22,6 +22,6 @@ do
 done
 
 docker-compose stop webui_b
-docker-compose up -d --force-recreate webui_b
+docker-compose up -d webui_b
 docker-compose scale webui_b=$bContainerCnt
- 
+
